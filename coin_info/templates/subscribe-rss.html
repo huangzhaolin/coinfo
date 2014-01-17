@@ -1,0 +1,131 @@
+{% include "common/head-tmp.html" %}
+<link href="static/css/jquery-dataTables/demo_table.css" rel="stylesheet">
+<section id="main-content">
+    <section class="wrapper">
+        <section class="panel">
+            <header class="panel-heading">
+                RSS订阅
+            </header>
+            <div class="panel-body">
+                <div class="btn-group">
+                    <a href="#add-rss-panel" data-toggle="modal" class="btn btn-xs btn-success">
+                        新增源 <i class="icon-plus"></i>
+                    </a>
+                </div>
+            <div class="adv-table">
+            <table cellpadding="0" cellspacing="0" border="0" class="display table table-bordered" id="hidden-table-info">
+            <thead>
+            <tr>
+                <th width="20%">RSS源</th>
+                <th width="60%">RSS URL</th>
+                <th width="20%">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for rss in rsses %}
+                <tr class="gradeU">
+                    <td>{{ rss.rssName }}</td>
+                    <td>{{ rss.rssURL }}</td>
+                    <td><a href="#">更新</a>&nbsp;&nbsp;<a href="#">删除</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+
+            </div>
+            </div>
+            </section>
+    </section>
+</section>
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="add-rss-panel" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">添加RSS源</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" action="subscribeInfo.htm" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="type" value="rss">
+                    <div class="form-group">
+                        <label for="rss-name">RSS源</label>
+                        <input type="text" class="form-control" id="rss-name" placeholder="RSS NAME" name="rssName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rss-url">RSS URL</label>
+                        <input type="text" class="form-control" id="rss-url" placeholder="RSS URL" name="rssURL" required>
+                    </div>
+                    <button type="submit" class="btn btn-default" id="add-rss-button">添加</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% include "common/js-source.html" %}
+<script src="static/javascript/base/jquery.dataTables.js"></script>
+
+<script type="text/javascript">
+    /* Formating function for row details */
+    function fnFormatDetails ( oTable, nTr )
+    {
+        var aData = oTable.fnGetData( nTr );
+        var sOut = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+        sOut += '<tr><td>Rendering engine:</td><td>'+aData[1]+' '+aData[4]+'</td></tr>';
+        sOut += '<tr><td>Link to source:</td><td>Could provide a link here</td></tr>';
+        sOut += '<tr><td>Extra info:</td><td>And any further details here (images etc)</td></tr>';
+        sOut += '</table>';
+
+        return sOut;
+    }
+
+    $(document).ready(function() {
+        /*
+         * Insert a 'details' column to the table
+         */
+        var nCloneTh = document.createElement( 'th' );
+        var nCloneTd = document.createElement( 'td' );
+        nCloneTd.innerHTML = '<img src="static/css/jquery-dataTables/images/details_open.png">';
+        nCloneTd.className = "center";
+
+        $('#hidden-table-info thead tr').each( function () {
+            this.insertBefore( nCloneTh, this.childNodes[0] );
+        } );
+
+        $('#hidden-table-info tbody tr').each( function () {
+            this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
+        } );
+
+        /*
+         * Initialse DataTables, with no sorting on the 'details' column
+         */
+        var oTable = $('#hidden-table-info').dataTable( {
+            "aoColumnDefs": [
+                { "bSortable": false, "aTargets": [ 0 ] }
+            ],
+            "aaSorting": [[1, 'asc']]
+        });
+
+        /* Add event listener for opening and closing details
+         * Note that the indicator for showing which row is open is not controlled by DataTables,
+         * rather it is done here
+         */
+        $('#hidden-table-info tbody td img').bind('click', function () {
+            var nTr = $(this).parents('tr')[0];
+            if ( oTable.fnIsOpen(nTr) )
+            {
+                /* This row is already open - close it */
+                this.src = "static/css/jquery-dataTables/images/details_open.png";
+                oTable.fnClose( nTr );
+            }
+            else
+            {
+                /* Open this row */
+                this.src = "static/css/jquery-dataTables/images/details_close.png";
+                oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr), 'details' );
+            }
+        } );
+    } );
+
+</script>
+{% include "common/foot-tmp.html" %}

@@ -1,0 +1,117 @@
+{% include "common/head-tmp.html" %}
+<!--main content start-->
+  <section id="main-content">
+      <section class="wrapper">
+       <div class="row">
+          <div class="col-lg-6">
+              <section class="panel">
+                  <header class="panel-heading">
+                      Chats
+                              <span class="tools pull-right">
+                                <a class="icon-chevron-down" href="javascript:;"></a>
+                                <a class="icon-remove" href="javascript:;"></a>
+                            </span>
+                  </header>
+                  <div class="panel-body">
+                      <div class="timeline-messages">
+                          <!-- Comment -->
+                          <div class="msg-time-chat">
+                              <a href="#" class="message-img"><img class="avatar" src="img/chat-avatar.jpg" alt=""></a>
+                              <div class="message-body msg-in">
+                                  <span class="arrow"></span>
+                                  <div class="text">
+                                      <p class="attribution"><a href="#">Jhon Doe</a> at 1:55pm, 13th April 2013</p>
+                                      <p>Hello, How are you brother?</p>
+                                  </div>
+                              </div>
+                          </div>
+                          <!-- /comment -->
+
+                          <!-- Comment -->
+                          <div class="msg-time-chat">
+                              <a href="#" class="message-img"><img class="avatar" src="img/chat-avatar2.jpg" alt=""></a>
+                              <div class="message-body msg-out">
+                                  <span class="arrow"></span>
+                                  <div class="text">
+                                      <p class="attribution"> <a href="#">Jonathan Smith</a> at 2:01pm, 13th April 2013</p>
+                                      <p>I'm Fine, Thank you. What about you? How is going on?</p>
+                                  </div>
+                              </div>
+                          </div>
+                          <!-- /comment -->
+
+                          <!-- Comment -->
+                          <div class="msg-time-chat">
+                              <a href="#" class="message-img"><img class="avatar" src="img/chat-avatar.jpg" alt=""></a>
+                              <div class="message-body msg-in">
+                                  <span class="arrow"></span>
+                                  <div class="text">
+                                      <p class="attribution"><a href="#">Jhon Doe</a> at 2:03pm, 13th April 2013</p>
+                                      <p>Yeah I'm fine too. Everything is going fine here.</p>
+                                  </div>
+                              </div>
+                          </div>
+                          <!-- /comment -->
+
+                          <!-- Comment -->
+                          <div class="msg-time-chat">
+                              <a href="#" class="message-img"><img class="avatar" src="img/chat-avatar2.jpg" alt=""></a>
+                              <div class="message-body msg-out">
+                                  <span class="arrow"></span>
+                                  <div class="text">
+                                      <p class="attribution"><a href="#">Jonathan Smith</a> at 2:05pm, 13th April 2013</p>
+                                      <p>well good to know that. anyway how much time you need to done your task?</p>
+                                  </div>
+                              </div>
+                          </div>
+                          <!-- /comment -->
+                          <!-- Comment -->
+                          <div class="msg-time-chat">
+                              <a href="#" class="message-img"><img class="avatar" src="img/chat-avatar.jpg" alt=""></a>
+                              <div class="message-body msg-in">
+                                  <span class="arrow"></span>
+                                  <div class="text">
+                                      <p class="attribution"><a href="#">Jhon Doe</a> at 1:55pm, 13th April 2013</p>
+                                      <p>Hello, How are you brother?</p>
+                                  </div>
+                              </div>
+                          </div>
+                          <!-- /comment -->
+                      </div>
+                  </div>
+              </section>
+          </div>
+          <div class="col-lg-6" id="rss-panel">
+              <input type="hidden" id="subscribe-rss" value="{{ rsses }}">
+          </div>
+        </div>
+      </section>
+{% include "common/js-source.html" %}
+<script type="text/javascript">
+    function loadRssData(){
+        var rsses=$("#subscribe-rss").val().split(",");
+        for(var i=0;i<rsses.length;i++){
+            $.ajax({
+                url:"showSubscribeData.htm",
+                type:"post",
+                data:{"type":"rss",
+                      "rssName":rsses[i] },
+                dataType:"json",
+                success:function(jsonData){
+                    var rssDataBody=[];
+                    var rssDataArr=jsonData;
+                    for(var i=0;i<rssDataArr.length;i++){
+                        var rssData=rssDataArr[i];
+                        rssDataBody.push("<a href=\""+rssData["url"]+"\">"+rssData["title"]+"</a>"+"<p>"+rssData["value"]+"</p>")
+                    }
+                    $("#rss-panel").append(coinfo.template.pannel(rsses[i],rssDataBody.join("<br>")))
+                }
+            });
+        }
+    }
+    $(document).ready(function(){
+        loadRssData();
+    });
+</script>
+<!--main content end-->
+{% include "common/foot-tmp.html" %}

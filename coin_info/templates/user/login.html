@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include "common/head.html" %}
+
+<body class="login-body">
+
+<div class="container">
+
+    <div class="form-signin">
+        {% csrf_token %}
+        <h2 class="form-signin-heading">sign in now</h2>
+
+        <div class="login-wrap">
+            <input type="text" class="form-control" name="username" id="username" placeholder="User ID" autofocus />
+            <input type="password" class="form-control" name="password" id="password" placeholder="Password" />
+            <!--<label class="checkbox">-->
+            <!--<input type="checkbox" value="remember-me"> Remember me-->
+            <!--</label>-->
+            <button class="btn btn-lg btn-login btn-block" type="button" onclick="coinfo.login()">Sign in</button>
+            <p style="color:red" id="login-message"></p>
+            <p></p>
+        </div>
+    </div>
+
+</div>
+{% include "common/js-source.html" %}
+<script>
+    coinfo.login = function () {
+        $.ajax({
+            url: "login.htm",
+            type: "post",
+            data: {
+                "username": $("#username").val(),
+                "password": $("#password").val()
+            },
+            dataType: "json",
+            success: function (jsonData) {
+                var resultCode = parseInt(jsonData["sysCode"])
+                if (resultCode == 0) {
+                    if(window.location.pathname.split("/").slice(-1)=="loginPage.htm"){
+                        location.href="index.htm";
+                    }else{
+                        location.reload();
+                    }
+                }
+                else {
+                    if (resultCode == "100001") {
+                        $("#login-message").html("用户名与密码错误！")
+                    }else {
+                        $("#login-message").html("登录异常,请联系管理员")
+                    }
+                }
+            }
+        })
+    };
+    //bind enter key
+    coinfo.utils.bindEnterKey($("#username"),coinfo.login);
+    coinfo.utils.bindEnterKey($("#password"),coinfo.login);
+</script>
+</body>
+</html>
