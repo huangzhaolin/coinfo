@@ -1,9 +1,88 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-
-</body>
-</html>
+{% include "common/head-tmp.html" %}
+<link href="static/css/jquery-dataTables/demo_table.css" rel="stylesheet">
+<section id="main-content">
+    <section class="wrapper">
+        <section class="panel">
+            <header class="panel-heading">
+                微博关注（关注人）
+            </header>
+            <div class="panel-body">
+                <div class="btn-group">
+                    <a href="#add-rss-panel" data-toggle="modal" class="btn btn-xs btn-success">
+                        关注人 <i class="icon-plus"></i>
+                    </a>
+                </div>
+                <div class="adv-table">
+                    <table cellpadding="0" cellspacing="0" border="0" class="display table table-bordered" id="hidden-table-info">
+                        <thead>
+                        <tr>
+                            <th width="60%">关注人</th>
+                            <th width="20%">微博</th>
+                            <th width="20%">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for rss in rsses %}
+                            <tr class="gradeU">
+                                <td>{{ rss.rssName }}</td>
+                                <td>{{ rss.rssURL }}</td>
+                                <td><a href="#">更新</a>&nbsp;&nbsp;<a href="#">删除</a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </section>
+</section>
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="add-weibo-user-panel" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">关注微博人</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" action="subscribeInfo.htm" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="type" value="rss">
+                    <div class="form-group">
+                        <label for="rss-name"></label>
+                        <input type="text" class="form-control" id="rss-name" placeholder="RSS NAME" name="rssName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rss-url">RSS URL</label>
+                        <input type="text" class="form-control" id="rss-url" placeholder="RSS URL" name="rssURL" required>
+                    </div>
+                    <button type="submit" class="btn btn-default" id="add-rss-button">添加</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="add-weibo-keyword-panel" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">添加RSS源</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" action="subscribeInfo.htm" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="type" value="rss">
+                    <div class="form-group">
+                        <label for="rss-name">RSS源</label>
+                        <input type="text" class="form-control" id="rss-name" placeholder="RSS NAME" name="rssName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rss-url">RSS URL</label>
+                        <input type="text" class="form-control" id="rss-url" placeholder="RSS URL" name="rssURL" required>
+                    </div>
+                    <button type="submit" class="btn btn-default" id="add-rss-button">添加</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

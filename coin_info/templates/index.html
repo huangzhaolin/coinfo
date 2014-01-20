@@ -3,6 +3,22 @@
   <section id="main-content">
       <section class="wrapper">
        <div class="row">
+           <div class="col-lg-6" id="rss-panel">
+               <input type="hidden" id="subscribe-rss" value="{{ rssStrings }}">
+               {% for rss in rsses %}
+                   <section class="panel">
+                       <header class="panel-heading">
+                           {{ rss.rssName }}
+                                  <span class="tools pull-right">
+                                    <a href="javascript:;" class="icon-chevron-down"></a>
+                                    <a href="javascript:;" class="icon-remove"></a>
+                                </span>
+                       </header>
+                       <div class="panel-body" id="{{ rss.rssName }}-body">
+                       </div>
+                   </section>
+               {% endfor %}
+           </div>
           <div class="col-lg-6">
               <section class="panel">
                   <header class="panel-heading">
@@ -81,9 +97,6 @@
                   </div>
               </section>
           </div>
-          <div class="col-lg-6" id="rss-panel">
-              <input type="hidden" id="subscribe-rss" value="{{ rsses }}">
-          </div>
         </div>
       </section>
 {% include "common/js-source.html" %}
@@ -91,22 +104,25 @@
     function loadRssData(){
         var rsses=$("#subscribe-rss").val().split(",");
         for(var i=0;i<rsses.length;i++){
-            $.ajax({
-                url:"showSubscribeData.htm",
-                type:"post",
-                data:{"type":"rss",
-                      "rssName":rsses[i] },
-                dataType:"json",
-                success:function(jsonData){
-                    var rssDataBody=[];
-                    var rssDataArr=jsonData;
-                    for(var i=0;i<rssDataArr.length;i++){
-                        var rssData=rssDataArr[i];
-                        rssDataBody.push("<a href=\""+rssData["url"]+"\">"+rssData["title"]+"</a>"+"<p>"+rssData["value"]+"</p>")
+            (function(i){
+                $.ajax({
+                    url:"showSubscribeData.htm",
+                    type:"post",
+                    data:{"type":"rss",
+                          "rssName":rsses[i] },
+                    dataType:"json",
+                    success:function(jsonData){
+                        console.log(i)
+                        var rssDataBody=[];
+                        var rssDataArr=jsonData;
+                        for(var j=0;j<rssDataArr.length;j++){
+                            var rssData=rssDataArr[j];
+                            rssDataBody.push("<a href=\""+rssData["url"]+"\" target=\"_blank\">"+rssData["title"]+"</a>"+"<p>"+rssData["value"]+"</p>")
+                        }
+                        $("#"+rsses[i]+"-body").html(rssDataBody.join("<br>"))
                     }
-                    $("#rss-panel").append(coinfo.template.pannel(rsses[i],rssDataBody.join("<br>")))
-                }
-            });
+                });
+            })(i);
         }
     }
     $(document).ready(function(){

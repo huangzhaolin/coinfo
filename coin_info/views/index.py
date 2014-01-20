@@ -6,4 +6,5 @@ from django.contrib.auth import get_user
 
 @login_required()
 def index(request):
-    return render(request, 'index.html',{"rsses":",".join([rss.rssName for rss in RSSSubscribe.objects.filter(user=get_user(request))]),"weibo":[]})
+    userObjects=RSSSubscribe.objects.filter(user=get_user(request))
+    return render(request, 'index.html',{"rsses":userObjects,"rssStrings":",".join([rss.rssName for rss in userObjects]),"weibo":[]})
