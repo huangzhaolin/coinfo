@@ -7,6 +7,7 @@ from django.contrib.auth import get_user
 from coin_info.models import RSSSubscribe
 from coin_info.log import log
 from coin_info.data_collector.rssAPI import  RSS
+from coin_info.data_collector import sinaWeiboAPI as sina
 import json
 import commonView
 
@@ -43,5 +44,29 @@ def showSubscribeData(request):
             return HttpResponse(json.dumps(rssDatas))
     except Exception,e:
         log.error("subscribe error:%s",e)
-        return HttpResponse(json.dumps(commonView.responseCommon(e)))
+        return HttpResponse(json.dumps(commonView.responseCommon(e),ensure_ascii=False))
 
+@login_required()
+def createSinaWeiboSession(request):
+    try:
+        sessionCode=request.GET.get("code")
+        if sessionCode:
+            sina.setAccessToken(sessionCode)
+            return HttpResponseRedirect("index.htm")
+        else:
+            url=sina.getCodeUrl()
+            return HttpResponseRedirect(url)
+    except Exception,e:
+        log.error("subscribe error:%s",e)
+        return HttpResponse(status=500)
+
+@login_required()
+def searchSinaWeiboUsers(request):
+    try:
+        params=request.GET
+        uid=params.get("uid")
+        screenName=params.get("screenName")
+        return HttpResponse(json.dumps(sina.searchUsers(uid,screenName),ensure_ascii=False))
+    except Exception,e:
+        log.error("subscribe error:%s",e)
+        return HttpResponse(json.dumps(commonView.responseCommon(e)))

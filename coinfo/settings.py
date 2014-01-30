@@ -61,9 +61,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'coinfo',
-        'USER': '************',
-        'PASSWORD': '************',
-        'HOST':"*****",
+        'USER': 'root',
+        'PASSWORD': '123',
+        'HOST':"jolinhuang.com",
         'PORT':3306
     }
 }

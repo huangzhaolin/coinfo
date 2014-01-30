@@ -16,5 +16,7 @@ urlpatterns = patterns('',
     url(r'^showSubscribeData.htm$',"coin_info.views.subscribe.showSubscribeData"),
     url(r"^subscribeRssPage.htm$","coin_info.views.subscribe.subscribeRssPage"),
     url(r"^subscribeWeiboPage.htm$","coin_info.views.subscribe.subscribeWeiboPage"),
+    url(r"^createSinaWeiboSession.htm$","coin_info.views.subscribe.createSinaWeiboSession"),
+    url(r"^searchSinaWeiboUsers.htm$","coin_info.views.subscribe.searchSinaWeiboUsers"),
     url(r'^admin/', include(admin.site.urls)),
 )
