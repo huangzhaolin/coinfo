@@ -3,7 +3,7 @@ __author__ = 'zhaolinhuang'
 from weibo import APIClient
 APP_KEY = '4028896591'
 APP_SECRET = '0d2e086881289fc93e8cc520c9016343'
-CALLBACK_URL = 'http://127.0.0.1:8000/createSinaWeiboSession.htm'
+CALLBACK_URL = 'http://127.0.0.1/createSinaWeiboSession.htm'
 
 weiboSession=None
 client=None

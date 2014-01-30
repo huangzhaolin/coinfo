@@ -1,7 +1,7 @@
 __author__ = 'zhaolinhuang'
 from coin_info.exceptionCode import CoinfoException
 from django.shortcuts import render
-def responseCommon(e):
+def responseCommonException(e):
     if isinstance(e,CoinfoException):
         message="%s"%e
         messageArr=message.split("-")

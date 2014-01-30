@@ -28,7 +28,7 @@ def login(request):
             raise CoinfoException(CoinfoException.USER_PASSWORD_ERR)
     except Exception,e:
         log.error("LOGIN ERROR :%s:%s %s"%(username,passwrod,e))
-        return HttpResponse(json.dumps(commonView.responseCommon(e)))
+        return HttpResponse(json.dumps(commonView.responseCommonException(e)))
 
 
 

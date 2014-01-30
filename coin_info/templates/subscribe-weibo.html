@@ -1,5 +1,8 @@
 {% include "common/head-tmp.html" %}
 <link href="static/css/jquery-dataTables/demo_table.css" rel="stylesheet">
+{% if not weiboSession %}
+    <iframe style="display:none" src="createSinaWeiboSession.htm"></iframe>
+{% endif %}
 <section id="main-content">
     <section class="wrapper">
         <section class="panel">
@@ -13,7 +16,8 @@
                     </a>
                 </div>
                 <div class="adv-table">
-                    <table cellpadding="0" cellspacing="0" border="0" class="display table table-bordered" id="hidden-table-info">
+                    <table cellpadding="0" cellspacing="0" border="0" class="display table table-bordered"
+                           id="hidden-table-info">
                         <thead>
                         <tr>
                             <th width="60%">关注人</th>
@@ -36,7 +40,7 @@
         </section>
     </section>
 </section>
-<div aria-hidden="true"  role="dialog" tabindex="-1" id="add-weibo-user-panel" class="modal fade">
+<div aria-hidden="true" role="dialog" tabindex="-1" id="add-weibo-user-panel" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -44,51 +48,43 @@
                 <h4 class="modal-title">关注微博人</h4>
             </div>
             <div class="modal-body">
-                <form role="form" action="subscribeInfo.htm" method="post">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <div class="input-group m-bot15">
-                            <div class="input-group-btn">
-                                <button tabindex="-1" class="btn btn-white" type="button" id="search-button">搜索</button>
-                                <button tabindex="-1" data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button">
-                                    <span class="caret"></span>
-                                </button>
-                                <ul role="menu" class="dropdown-menu">
-                                    <li><a href="javascript:$('#search-button').html('新浪微博')">新浪微博</a></li>
-                                    <li><a href="javascript:$('#search-button').html('twitter')">twitter</a></li>
-                                </ul>
-                            </div>
-                            <input type="text" class="form-control">
+                {% csrf_token %}
+                <div class="form-group">
+                    <div class="input-group m-bot15">
+                        <input type="text" class="form-control" id="search-user">
+
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown"
+                                    id="search-button">搜索 <span class="caret"></span></button>
+                            <ul class="dropdown-menu pull-right">
+                                <li>
+                                    <a href="javascript:(function(){searchWeiboUsers('sina');$('#search-button').html('新浪微博<span class=\'caret\'></span>')})()">新浪微博</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:(function(){searchWeiboUsers('twitter');$('#search-button').html('twitter<span class=\'caret\'></span>')})()">twitter</a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <section class="panel tasks-widget">
-                            <header class="panel-heading">
-                                搜索结果
-                            </header>
-                            <div class="panel-body">
-                                <div class="task-content">
-                                    <ul class="task-list">
-                                        <li>
-                                            <div class="task-title">
-                                                <span class="task-title-sp">Flatlab is Modern Dashboard</span>
-                                                <span class="badge badge-sm label-success">2 Days</span>
-                                                <div class="pull-right hidden-phone">
-                                                    <button class="btn btn-success btn-xs">关注</button>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
+                </div>
+                <div class="form-group">
+                    <section class="panel tasks-widget">
+                        <header class="panel-heading">
+                            搜索结果
+                        </header>
+                        <div class="panel-body">
+                            <div class="task-content">
+                                <ul class="task-list">
+                                    <li>
+                                        <div class="task-title" id="user-search-result">
 
-                                <div class=" add-task-row">
-                                    <a class="btn btn-default btn-sm pull-right" href="#">See All Tasks</a>
-                                </div>
+                                        </div>
+                                    </li>
+                                </ul>
                             </div>
-                        </section>
-                    </div>
-                    <button type="submit" class="btn btn-default" id="add-rss-button">添加</button>
-                </form>
+                        </div>
+                    </section>
+                </div>
             </div>
         </div>
     </div>
@@ -98,11 +94,10 @@
 
 <script type="text/javascript">
     /* Formating function for row details */
-    function fnFormatDetails ( oTable, nTr )
-    {
-        var aData = oTable.fnGetData( nTr );
+    function fnFormatDetails(oTable, nTr) {
+        var aData = oTable.fnGetData(nTr);
         var sOut = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
-        sOut += '<tr><td>Rendering engine:</td><td>'+aData[1]+' '+aData[4]+'</td></tr>';
+        sOut += '<tr><td>Rendering engine:</td><td>' + aData[1] + ' ' + aData[4] + '</td></tr>';
         sOut += '<tr><td>Link to source:</td><td>Could provide a link here</td></tr>';
         sOut += '<tr><td>Extra info:</td><td>And any further details here (images etc)</td></tr>';
         sOut += '</table>';
@@ -110,31 +105,33 @@
         return sOut;
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         /*
          * Insert a 'details' column to the table
          */
-        var nCloneTh = document.createElement( 'th' );
-        var nCloneTd = document.createElement( 'td' );
+        var nCloneTh = document.createElement('th');
+        var nCloneTd = document.createElement('td');
         nCloneTd.innerHTML = '<img src="static/css/jquery-dataTables/images/details_open.png">';
         nCloneTd.className = "center";
 
-        $('#hidden-table-info thead tr').each( function () {
-            this.insertBefore( nCloneTh, this.childNodes[0] );
-        } );
+        $('#hidden-table-info thead tr').each(function () {
+            this.insertBefore(nCloneTh, this.childNodes[0]);
+        });
 
-        $('#hidden-table-info tbody tr').each( function () {
-            this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
-        } );
+        $('#hidden-table-info tbody tr').each(function () {
+            this.insertBefore(nCloneTd.cloneNode(true), this.childNodes[0]);
+        });
 
         /*
          * Initialse DataTables, with no sorting on the 'details' column
          */
-        var oTable = $('#hidden-table-info').dataTable( {
+        var oTable = $('#hidden-table-info').dataTable({
             "aoColumnDefs": [
                 { "bSortable": false, "aTargets": [ 0 ] }
             ],
-            "aaSorting": [[1, 'asc']]
+            "aaSorting": [
+                [1, 'asc']
+            ]
         });
 
         /* Add event listener for opening and closing details
@@ -143,20 +140,63 @@
          */
         $('#hidden-table-info tbody td img').bind('click', function () {
             var nTr = $(this).parents('tr')[0];
-            if ( oTable.fnIsOpen(nTr) )
-            {
+            if (oTable.fnIsOpen(nTr)) {
                 /* This row is already open - close it */
                 this.src = "static/css/jquery-dataTables/images/details_open.png";
-                oTable.fnClose( nTr );
+                oTable.fnClose(nTr);
             }
-            else
-            {
+            else {
                 /* Open this row */
                 this.src = "static/css/jquery-dataTables/images/details_close.png";
-                oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr), 'details' );
+                oTable.fnOpen(nTr, fnFormatDetails(oTable, nTr), 'details');
             }
-        } );
-    } );
+        });
+    });
 
 </script>
+<script type="text/javascript">
+    function searchWeiboUsers(weiboType) {
+        url = {
+            "sina": "searchSinaWeiboUsers.htm"
+        };
+        $.ajax({
+            url: url[weiboType],
+            type:"post",
+            data: {
+                "screenName": $("#search-user").val()
+            },
+            dataType: "json",
+            beforeSend: function () {
+                coinfo.utils.addLoader($("#user-search-result"))
+            },
+            success: function (jsonData) {
+                if ("sysCode" in jsonData) {
+                    $("#user-search-result").html("No data available");
+                } else {
+                    $("#user-search-result").html(coinfo.template.weiboUser(weiboType, jsonData))
+                }
+            }
+        });
+    }
+    function subscribeWeiboUser(weiboType, userID, clickButton) {
+        $.ajax({
+            url: "subscribeInfo.htm",
+            type: "post",
+            data: {type: "weibo-user", weiboType: weiboType, subscribeUser: userID},
+            dataType: "json",
+            success: function (jsonData) {
+                if (("sysCode" in jsonData) && (jsonData["sysCode"] == 0 || jsonData["sysCode"] == 1)) {
+                    $(clickButton).removeClass("btn-success");
+                    $(clickButton).addClass("btn-default");
+                    $(clickButton).addClass("btn-default");
+                    $(clickButton).find("span").html("已关注");
+                    $(clickButton).attr("disbaled", true);
+                }
+            }
+        });
+    }
+
+</script>
+
+
 {% include "common/foot-tmp.html" %}

@@ -11,8 +11,11 @@ class RSSSubscribe(models.Model):
 
 class WeiboUserSubscribe(models.Model):
     user=models.ForeignKey(User)
-    subscribeUser=models.CharField("SUBSCRIBE USERS",max_length=1000)
-    weiboType=models.CharField("WEIBO TYPE",max_length=10,choices=(("SW","SINA WEIBO"),("TW","TWITTER")))
+    subscribeUser=models.CharField("SUBSCRIBE USERS",max_length=100)
+    weiboType=models.CharField("WEIBO TYPE",max_length=10)
+
+    class Meta:
+        unique_together = ('user','weiboType', 'subscribeUser',)
 
     def __str__(self):
         return "%s %s"%(self.subscribeUser,self.weiboType)

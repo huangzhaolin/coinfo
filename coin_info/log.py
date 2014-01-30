@@ -4,7 +4,7 @@ import logging
 import traceback
 from logging.handlers import  TimedRotatingFileHandler
 
-LOG_DIR="/Users/zhaolinhuang/logs/coinfo"
+LOG_DIR="D:\coinfo"
 if not os.path.exists(LOG_DIR):
     os.makedirs(LOG_DIR)
 

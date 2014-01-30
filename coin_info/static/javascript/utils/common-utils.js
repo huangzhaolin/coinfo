@@ -11,3 +11,6 @@ coinfo.utils.bindEnterKey = function (e, fn) {
         }
     });
 };
+coinfo.utils.addLoader=function(e){
+  $(e).html("<div align='center'><img src='static/img/loader.gif'/></div>");
+};
