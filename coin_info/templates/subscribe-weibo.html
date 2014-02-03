@@ -26,13 +26,11 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for rss in rsses %}
                             <tr class="gradeU">
                                 <td>{{ rss.rssName }}</td>
                                 <td>{{ rss.rssURL }}</td>
                                 <td><a href="#">更新</a>&nbsp;&nbsp;<a href="#">删除</a></td>
                             </tr>
-                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -195,7 +193,17 @@
             }
         });
     }
+    function showSubscribeWeiboUser(){
+        $.ajax({
+            url:"",
+            data:{},
+            type:"post",
+            dataType:"json",
+            success:function(jsonData){
 
+            }
+        });
+    }
 </script>
 
 

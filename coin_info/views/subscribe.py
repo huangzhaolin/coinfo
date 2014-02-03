@@ -12,7 +12,9 @@ from coin_info.data_collector.rssAPI import RSS
 from coin_info.data_collector import sinaWeiboAPI as sina
 from weibo import APIError
 import json
+import traceback
 import commonView
+
 
 
 @login_required()
@@ -64,8 +66,16 @@ def showSubscribeData(request):
             rss = RSSSubscribe.objects.get(user=get_user(request), rssName=subscribeParam.get("rssName"))
             rssDatas = RSS(rss.rssURL).entites()
             return HttpResponse(json.dumps(rssDatas))
+        if subscribeParam.get("type",None)=="weibo":
+            weiboSubscribes=WeiboUserSubscribe.objects.filter(user=get_user(request),weiboType="sina")
+            weiboTimeLines=[]
+            for i in range(0,len(weiboSubscribes)/20+1):
+                sinaWeiboUserIDs=map(lambda weiboUser:weiboUser.subscribeUser,weiboSubscribes[i*20:(i+1)*20-1])
+                print sinaWeiboUserIDs
+                weiboTimeLines.extend(sina.searchWeiboTimeLine(",".join(sinaWeiboUserIDs)))
+            return HttpResponse(json.dumps(weiboTimeLines, ensure_ascii=False))
     except Exception, e:
-        log.error("subscribe error:%s", e)
+        log.error("subscribe error:%s", traceback.format_exc())
         return HttpResponse(json.dumps(commonView.responseCommonException(e), ensure_ascii=False))
 
 

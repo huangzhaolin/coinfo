@@ -29,3 +29,6 @@ def searchUsers(uid,screenName=None):
         users=client.users.show.get(screen_name=screenName)
         return users
 
+def searchWeiboTimeLine(uids):
+    global client
+    return client.statuses.timeline_batch.get(uids=uids)
