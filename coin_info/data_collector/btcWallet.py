@@ -2,6 +2,7 @@ __author__ = 'zhaolinhuang'
 from pyquery import PyQuery as pq
 from coin_info.models import BTCWallet
 import datetime
+import threading
 
 
 def getBTCTOP100DATA(date):
@@ -22,15 +23,15 @@ def getBTCTOP100DATA(date):
         btcWallet = BTCWallet(rankIndex=rank, address=address, balance=balance,
                               rankDate=datetime.datetime(year=int(rankDate[0]), month=int(rankDate[1]),
                                                          day=int(rankDate[2])))
-        btcWallet.save()
+        btcWallet.save(force_insert=True)
     return trs
 
 
 def syncData():
-    historyDate = datetime.datetime(year=2014, month=3, day=5)
-    while int(historyDate.strftime("%S")) < int(datetime.datetime.now().strftime("%S")):
-        getBTCTOP100DATA(historyDate.strftime("%Y%m%d"))
-        historyDate + datetime.timedelta(days=1)
+    def doSync():
+        historyDate = datetime.datetime(year=2014, month=3, day=5)
+        while int(historyDate.strftime("%S")) < int(datetime.datetime.now().strftime("%S")):
+            getBTCTOP100DATA(historyDate.strftime("%Y%m%d"))
+            historyDate + datetime.timedelta(days=1)
 
-
-syncData()
+    threading.Thread(target=doSync).start()
