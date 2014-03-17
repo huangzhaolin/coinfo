@@ -1,6 +1,7 @@
 __author__ = 'zhaolinhuang'
 from pyquery import PyQuery as pq
 from coin_info.models import BTCWallet
+from django.db.models import Max
 import datetime
 import threading
 
@@ -31,9 +32,9 @@ def getBTCTOP100DATA(date):
 
 def syncData():
     def doSync():
-        historyDate = datetime.datetime(year=2014, month=3, day=5)
+        startDateTime = BTCWallet.objects.all().aggregate(Max('rankDate')).get('rankDate__max')
         while int(historyDate.strftime("%S")) < int(datetime.datetime.now().strftime("%S")):
             getBTCTOP100DATA(historyDate.strftime("%Y%m%d"))
-            historyDate = historyDate + datetime.timedelta(days=1)
+            startDateTime = startDateTime + datetime.timedelta(days=1)
 
     threading.Thread(target=doSync).start()

@@ -27,4 +27,4 @@ class BTCWallet(models.Model):
     address = models.CharField("BTC WALLET ADDRESS", max_length=1000)
     balance = models.FloatField("BTC BANLANCE")
     rankIndex = models.IntegerField("RANK INDEX")
-    rankDate = models.DateField("RANK DATE TIME")
+    rankDate = models.DateTimeField("RANK DATE TIME")
