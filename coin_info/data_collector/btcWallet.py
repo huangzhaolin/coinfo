@@ -35,7 +35,8 @@ def getBTCTOP100DATA(date):
 
 def syncData():
     def doSync():
-        startDateTime = BTCWallet.objects.all().aggregate(Max('rankDate')).get('rankDate__max')
+        startDateTime = BTCWallet.objects.all().aggregate(Max('rankDate')).get('rankDate__max') or datetime.datetime(
+            year=2013, month=8, day=1)
         while int(historyDate.strftime("%S")) < int(datetime.datetime.now().strftime("%S")):
             log.info("SYNC DATE ON :%s" % startDateTime)
             getBTCTOP100DATA(historyDate.strftime("%Y%m%d"))
