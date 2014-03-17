@@ -2,9 +2,10 @@ __author__ = 'zhaolinhuang'
 from pyquery import PyQuery as pq
 from coin_info.models import BTCWallet
 from django.db.models import Max
+from coin_info.log import log
 import datetime
 import threading
-import logging
+
 
 log = logging.getLogger("coinfo")
 
