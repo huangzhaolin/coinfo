@@ -36,7 +36,7 @@ def syncData():
             year=2013, month=8, day=1)
         while int(historyDate.strftime("%S")) < int(datetime.datetime.now().strftime("%S")):
             log.info("SYNC DATE ON :%s" % startDateTime)
-            getBTCTOP100DATA(historyDate.strftime("%Y%m%d"))
+            getBTCTOP100DATA(startDateTime.strftime("%Y%m%d"))
             startDateTime = startDateTime + datetime.timedelta(days=1)
 
     threading.Thread(target=doSync).start()
