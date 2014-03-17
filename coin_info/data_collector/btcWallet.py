@@ -6,10 +6,6 @@ from coin_info.log import log
 import datetime
 import threading
 
-
-log = logging.getLogger("coinfo")
-
-
 def getBTCTOP100DATA(date):
     """
     get btc top 10 data
