@@ -4,6 +4,9 @@ from coin_info.models import BTCWallet
 from django.db.models import Max
 import datetime
 import threading
+import logging
+
+log = logging.getLogger("coinfo")
 
 
 def getBTCTOP100DATA(date):
@@ -34,6 +37,7 @@ def syncData():
     def doSync():
         startDateTime = BTCWallet.objects.all().aggregate(Max('rankDate')).get('rankDate__max')
         while int(historyDate.strftime("%S")) < int(datetime.datetime.now().strftime("%S")):
+            log.info("SYNC DATE ON :%s" % startDateTime)
             getBTCTOP100DATA(historyDate.strftime("%Y%m%d"))
             startDateTime = startDateTime + datetime.timedelta(days=1)
 
