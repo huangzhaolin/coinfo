@@ -63,7 +63,7 @@ DATABASES = {
         'NAME': 'coinfo',
         'USER': 'root',
         'PASSWORD': '123',
-        'HOST':"jolinhuang.com",
+        'HOST':"localhost",
         'PORT':3306
     }
 }
